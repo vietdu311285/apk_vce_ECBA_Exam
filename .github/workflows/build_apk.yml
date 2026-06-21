@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-22.04
+    timeout-minutes: 90
 
     steps:
       - uses: actions/checkout@v4
@@ -31,16 +32,11 @@ jobs:
           pip install --upgrade pip
           pip install buildozer==1.5.0 cython==0.29.36
 
-      - name: Test build minimal APK first
+      - name: Build APK
         run: |
-          buildozer -f -c buildozer_minimal.spec android debug 2>&1 | tail -100
-        timeout-minutes: 60
-        continue-on-error: true
-
-      - name: Build full APK
-        run: |
-          buildozer -f android debug 2>&1 | tail -100
-        timeout-minutes: 60
+          buildozer -v android debug
+        env:
+          BUILDOZER_LOG_LEVEL: 2
 
       - name: Upload APK on success
         if: success()
@@ -50,15 +46,12 @@ jobs:
           path: bin/*.apk
           retention-days: 30
 
-      - name: Show APK
-        if: success()
+      - name: Check APK exists
         run: |
-          echo "=== APK built successfully ==="
-          ls -lh bin/*.apk
-
-      - name: Build failed
-        if: failure()
-        run: |
-          echo "=== Build failed ==="
-          echo "Check logs above for details"
-          exit 1
+          if [ -f bin/*.apk ]; then
+            ls -lh bin/*.apk
+            echo "Build successful!"
+          else
+            echo "APK not found - build failed"
+            exit 1
+          fi

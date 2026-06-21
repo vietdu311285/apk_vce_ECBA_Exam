@@ -1,5 +1,3 @@
-# Desktop development only
-kivy>=2.2
-kivymd>=1.1
+kivy
 pillow
 pytest

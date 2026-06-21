@@ -1,14 +1,14 @@
 [app]
-title = ECBA Exam Simulator
+title = ECBA Exam
 package.name = ecbaexam
-package.domain = com.ecbasim
+package.domain = com.ecbaexam
 version = 1.0.0
 
 source.main = main.py
 source.dir = .
-source.include_exts = py,png,jpg,jpeg,json,vce
+source.include_exts = py,png,jpg
 
-requirements = python3,kivy,kivymd,pillow
+requirements = python3,kivy,pillow
 
 icon.filename = assets/icon.png
 orientation = portrait
@@ -18,7 +18,7 @@ android.api = 31
 android.ndk = 25b
 android.accept_sdk_license = True
 android.permissions = READ_EXTERNAL_STORAGE,WRITE_EXTERNAL_STORAGE
-android.archs = arm64-v8a,armeabi-v7a
+android.archs = arm64-v8a
 
 [buildozer]
 log_level = 2
