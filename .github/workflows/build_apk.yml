@@ -3,110 +3,28 @@ name: Build ECBA APK
 on:
   push:
     branches: [ main, master ]
-  workflow_dispatch:       # cho phép chạy thủ công từ tab Actions
+  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Build APK with Kivy buildozer
+        uses: kivy/buildozer-action@v1
         with:
-          python-version: "3.11"
+          command: buildozer android debug
+          buildozer_version: master
 
-      - name: Cache Buildozer global directory
-        uses: actions/cache@v4
-        with:
-          path: ~/.buildozer
-          key: ${{ runner.os }}-buildozer-${{ hashFiles('buildozer.spec') }}
-          restore-keys: |
-            ${{ runner.os }}-buildozer-
-
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            python3-pip \
-            build-essential \
-            git \
-            zip \
-            unzip \
-            openjdk-17-jdk \
-            autoconf \
-            libtool \
-            pkg-config \
-            zlib1g-dev \
-            libncurses5-dev \
-            libncursesw5-dev \
-            libtinfo5 \
-            cmake \
-            libffi-dev \
-            libssl-dev \
-            ffmpeg \
-            libsdl2-dev \
-            libsdl2-image-dev \
-            libsdl2-mixer-dev \
-            libsdl2-ttf-dev \
-            libportmidi-dev
-
-      - name: Install Buildozer and dependencies
-        run: |
-          pip install --upgrade pip
-          pip install buildozer cython==0.29.37 jinja2 colorama
-
-      - name: Create placeholder icon if missing
-        run: |
-          mkdir -p assets
-          if [ ! -f assets/icon.png ]; then
-            python3 -c "
-          from PIL import Image, ImageDraw, ImageFont
-          img = Image.new('RGB', (192, 192), color='#1565C0')
-          d = ImageDraw.Draw(img)
-          d.text((30, 70), 'ECBA', fill='white')
-          img.save('assets/icon.png')
-          " 2>/dev/null || python3 -c "
-          # Fallback: tạo ảnh đơn giản không cần PIL font
-          import struct, zlib
-          def make_png(w, h, color):
-              raw = (b'\\x00' + bytes(color)*w) * h
-              idat = zlib.compress(raw)
-              def chunk(t, d):
-                  c = struct.pack('>I', len(d)) + t + d
-                  crc = zlib.crc32(t + d) & 0xffffffff
-                  return c + struct.pack('>I', crc)
-              return (b'\\x89PNG\\r\\n\\x1a\\n'
-                      + chunk(b'IHDR', struct.pack('>IIBBBBB', w, h, 8, 2, 0, 0, 0))
-                      + chunk(b'IDAT', idat)
-                      + chunk(b'IEND', b''))
-          open('assets/icon.png', 'wb').write(make_png(192, 192, [21, 101, 192]))
-          "
-          fi
-
-      - name: Setup Android environment
-        run: |
-          mkdir -p ~/.android
-          echo "### User Sources for Android SDK Manager" > ~/.android/repositories.cfg
-
-      - name: Build debug APK
-        run: |
-          buildozer -v android debug
-        env:
-          JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
-          ANDROID_SDK_ROOT: /home/runner/.buildozer/android/platform/android-sdk
-          ANDROID_HOME: /home/runner/.buildozer/android/platform/android-sdk
-
-      - name: Upload APK artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
+        if: success()
         with:
           name: ecba-exam-apk
           path: bin/*.apk
           retention-days: 30
 
-      - name: Show APK info
-        run: |
-          echo "=== APK built ==="
-          ls -lh bin/*.apk 2>/dev/null || echo "Không tìm thấy APK"
+      - name: Show build result
+        run: ls -lh bin/*.apk 2>/dev/null || echo "Build failed"
