@@ -30,6 +30,7 @@ orientation = portrait
 android.minapi = 21
 android.api = 33
 android.ndk = 25b
+android.accept_sdk_license = True
 
 # Quyền truy cập file
 android.permissions = READ_EXTERNAL_STORAGE,WRITE_EXTERNAL_STORAGE,MANAGE_EXTERNAL_STORAGE

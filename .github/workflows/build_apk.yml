@@ -51,19 +51,12 @@ jobs:
             libsdl2-image-dev \
             libsdl2-mixer-dev \
             libsdl2-ttf-dev \
-            libportmidi-dev \
-            android-sdk-tools
+            libportmidi-dev
 
       - name: Install Buildozer and dependencies
         run: |
           pip install --upgrade pip
-          pip install buildozer cython==0.29.37
-
-      - name: Accept Android SDK licenses
-        run: |
-          mkdir -p ~/.android
-          echo "### User Sources for Android SDK Manager" > ~/.android/repositories.cfg
-          yes | sdkmanager --licenses 2>/dev/null || true
+          pip install buildozer cython==0.29.37 jinja2 colorama
 
       - name: Create placeholder icon if missing
         run: |
@@ -93,11 +86,18 @@ jobs:
           "
           fi
 
+      - name: Setup Android environment
+        run: |
+          mkdir -p ~/.android
+          echo "### User Sources for Android SDK Manager" > ~/.android/repositories.cfg
+
       - name: Build debug APK
         run: |
           buildozer -v android debug
         env:
           JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
+          ANDROID_SDK_ROOT: /home/runner/.buildozer/android/platform/android-sdk
+          ANDROID_HOME: /home/runner/.buildozer/android/platform/android-sdk
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
