@@ -1,0 +1,7 @@
+Cách khác — không cần proxy, dùng GitHub Desktop:
+
+Tải GitHub Desktop: desktop.github.com
+Đăng nhập tài khoản vietdu311285
+File → Add local repository → chọn thư mục A:\11. ToolPython\Tool Apk doc file vce on thi ECBA
+Nhấn Publish repository → chọn repo apk_vce_ECBA_Exam
+GitHub Desktop tự xử lý proxy Windows mà không cần cấu hình gì thêm.
