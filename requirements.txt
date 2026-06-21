@@ -1,11 +1,5 @@
-# ECBA Exam Simulator - requirements
-# Install: pip install -r requirements.txt
-# Build APK: use GitHub Actions (see .github/workflows/build_apk.yml)
-
-# UI Framework (desktop + Android)
-kivy==2.2.1
-kivymd==1.1.1
+# Desktop development only
+kivy>=2.2
+kivymd>=1.1
 pillow
-
-# Testing (desktop only, not included in APK)
 pytest
