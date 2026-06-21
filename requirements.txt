@@ -3,9 +3,9 @@
 # Build APK: use GitHub Actions (see .github/workflows/build_apk.yml)
 
 # UI Framework (desktop + Android)
-kivy==2.3.0
-kivymd==1.2.0
-pillow>=10.0.0
+kivy==2.2.1
+kivymd==1.1.1
+pillow
 
-# Testing
-pytest==8.3.0
+# Testing (desktop only, not included in APK)
+pytest

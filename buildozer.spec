@@ -18,7 +18,7 @@ source.include_exts = py,png,jpg,jpeg,json,vce,xml,ttf
 source.dir = .
 
 # Thư viện Python cần thiết
-requirements = python3==3.11.0,kivy==2.3.0,kivymd==1.2.0,pillow
+requirements = python3==3.11.0,kivy==2.2.1,kivymd==1.1.1,pillow
 
 # Icon (thay bằng file icon.png của bạn)
 icon.filename = assets/icon.png
